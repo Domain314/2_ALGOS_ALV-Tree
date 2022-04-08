@@ -1,4 +1,5 @@
 #include "Display.hpp"
+//#define clearScreen() (std::cout << "\033c")
 
 void Display::printTree(Holder* holder) {
     int depth = holder->getDepth(holder->getHead());
@@ -9,10 +10,12 @@ void Display::printTree(Holder* holder) {
     }
     calcEmptySpaces(depth, maxNumDigits);
     recursiveDraw(depth, maxNumDigits, holder->getHead());
-    printDisplays();
+//    printDisplays();
 }
 
 void Display::recursiveDraw(int depth, int maxNumDigits, Node* node) {
+    usleep(500000);
+    printDisplays();
     if (depth < 0) return;
     int emptySpace = getEmptySpace(depth);
     displays.at(depth).append(emptySpace, ' ');
@@ -127,7 +130,7 @@ int Display::getEmptySpace(int depth) {
 
 
 void Display::printDisplays() {
-    std::cout << "\n";
+    std::cout << "\033c";
     for (int i = 0; i < displays.size(); ++i) {
         std::cout << displays.at(i) << "\n";
         std::cout << "-\n";
