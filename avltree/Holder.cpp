@@ -45,3 +45,32 @@ Node* Holder::searchNode(int num) {
 void Holder::deleteNode(int num) {
     //to do
 }
+
+int Holder::getDepth(Node* node) {
+    int depth = 0, maxDepth = 0;
+    recursiveDive(depth, maxDepth, node);
+    return maxDepth;
+}
+
+// pass ints by reference to save some precious bits
+void Holder::recursiveDive(int &depth, int &maxDepth, Node* node) {
+    if (node == nullptr) return;
+    if (depth > maxDepth) maxDepth = depth;
+    recursiveDive(++depth, maxDepth, node->left);
+    --depth;
+    recursiveDive(++depth, maxDepth, node->right);
+    --depth;
+}
+
+int Holder::getMaxNum(Node* node) {
+    int maxNum = 0;
+    recursiveDive(maxNum, node);
+    return maxNum;
+}
+
+void Holder::recursiveDive(int &maxNum, Node* node) {
+    if (node == nullptr) return;
+    if (node->num > maxNum) maxNum = node->num;
+    recursiveDive(maxNum, node->left);
+    recursiveDive(maxNum, node->right);
+}

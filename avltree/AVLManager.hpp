@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include "Holder.hpp"
+#include "Display.hpp"
 
 using namespace std;
 
@@ -16,7 +17,9 @@ public:
     void printError(int error);
 
 private:
+    void setupTree();
     std::vector<Holder*> holders;
+    Display* display;
 };
 
 
