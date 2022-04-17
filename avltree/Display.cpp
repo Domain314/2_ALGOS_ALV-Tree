@@ -1,20 +1,30 @@
 #include "Display.hpp"
 //#define clearScreen() (std::cout << "\033c")
+#define WAIT_TIME 300000    // 500000 = 0,5sek
 
+Display::Display(Holder* holder) {
+    printTree(holder);
+}
+
+// display preps, prints and self-destruct.
 void Display::printTree(Holder* holder) {
     int depth = holder->getDepth(holder->getHead());
-    int maxNumDigits = getDigits(holder->getMaxNum(holder->getHead()));
+    int maxNumDigits = getDigits(holder->getMinMaxNum(holder->getHead(), true));
 
     for (int i = 0; i < depth+1; ++i) {
         displays.push_back("");
     }
     calcEmptySpaces(depth, maxNumDigits);
     recursiveDraw(depth, maxNumDigits, holder->getHead());
-//    printDisplays();
+
+    usleep(WAIT_TIME);
+    printDisplays();
+    delete this;
 }
 
+// draw one node after another
 void Display::recursiveDraw(int depth, int maxNumDigits, Node* node) {
-    usleep(500000);
+    usleep(WAIT_TIME);
     printDisplays();
     if (depth < 0) return;
     int emptySpace = getEmptySpace(depth);
@@ -38,6 +48,8 @@ void Display::recursiveDraw(int depth, int maxNumDigits, Node* node) {
     if (maxNumDigits == 1 || maxNumDigits == 3)
         displays.at(depth).append(" ");
 }
+
+// draw empty space, where nodes should've been
 void Display::recursiveDraw(int depth, int maxNumDigits) {
     int emptySpace = getEmptySpace(depth);
     displays.at(depth).append(emptySpace, ' ');
@@ -50,6 +62,7 @@ void Display::recursiveDraw(int depth, int maxNumDigits) {
     displays.at(depth).append(emptySpace, ' ');
 }
 
+// Node: (1) (2) ..
 std::string Display::drawNode(Node* node, int maxNumDigits) {
     int digits = getDigits(node->num);
     if (maxNumDigits == digits)
@@ -65,6 +78,7 @@ std::string Display::drawNode(Node* node, int maxNumDigits) {
     return " ";
 }
 
+// check how much digits the largest num in tree has
 int Display::getDigits(int num) {
     if (num >= 1000) return 4;
     if (num >= 100) return 3;
@@ -72,6 +86,8 @@ int Display::getDigits(int num) {
     return 1;
 }
 
+// based on digit-amount of largest num in tree,
+// decide which number-sequence to take for [empty space]-calculations
 void Display::calcEmptySpaces(int depth, int maxNumDigits) {
     emptySpaces.clear();
 
@@ -100,6 +116,8 @@ void Display::calcEmptySpaces(int depth, int maxNumDigits) {
     }
 }
 
+// 3 formulas for number sequences to calculate spaces for given tree-depth
+// n = (n*2)+2
 int Display::recursiveSingleSpace(int depth, int maxDepth, int num) {
     if (depth < maxDepth) {
         return recursiveSingleSpace(depth+1, maxDepth, (num*2)+2);
@@ -108,6 +126,7 @@ int Display::recursiveSingleSpace(int depth, int maxDepth, int num) {
     }
 }
 
+// n = n+3*2^d
 int Display::recursiveDoubTripSpace(int depth, int maxDepth, int num) {
     if (depth < maxDepth) {
         return recursiveDoubTripSpace(depth+1, maxDepth, (num+3*(int)std::pow(2,depth)));
@@ -116,6 +135,7 @@ int Display::recursiveDoubTripSpace(int depth, int maxDepth, int num) {
     }
 }
 
+// n = (2*n)+3
 int Display::recursiveQuadSpace(int depth, int maxDepth, int num) {
     if (depth < maxDepth) {
         return recursiveQuadSpace(depth+1, maxDepth, ((2*num)+3));
@@ -124,10 +144,10 @@ int Display::recursiveQuadSpace(int depth, int maxDepth, int num) {
     }
 }
 
+// return number of spaces for given depth
 int Display::getEmptySpace(int depth) {
     return emptySpaces.at(depth);
 }
-
 
 void Display::printDisplays() {
     std::cout << "\033c";

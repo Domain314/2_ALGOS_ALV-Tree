@@ -1,8 +1,8 @@
 #include <iostream>
-#include "AVLManager.hpp"
+#include "Menu.hpp"
 
 int main() {
-    AVLManager* avlManager = new AVLManager();
-    delete avlManager;
+    Menu* menu = new Menu();
+    delete menu;
     return 0;
 }

@@ -6,20 +6,22 @@
 #include <fstream>
 #include <iostream>
 #include "Holder.hpp"
-#include "Display.hpp"
+
 
 using namespace std;
 
 class AVLManager {
 public:
     AVLManager();
-    void feedNewTree();
-    void printError(int error);
+    Holder* getTree(string command);
+
 
 private:
-    void setupTree();
+    int feedNewTree(string path);
+    void printError(int error);
+
     std::vector<Holder*> holders;
-    Display* display;
+
 };
 
 

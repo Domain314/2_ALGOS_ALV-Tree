@@ -11,6 +11,8 @@
 
 class Display {
 public:
+    Display(Holder* holder);
+private:
     void printTree(Holder* holder);
     void recursiveDraw(int depth, int maxNumDigits, Node* node);
     void recursiveDraw(int depth, int maxNumDigits);
